@@ -12,7 +12,10 @@ const cartRoutes = require("./Routes/cartRoute");
 const PORT = process.env.PORT
 
 app.use(express.json());
-app.use(cors());
+app.use(cors({
+    origin: ["http://localhost:5173","https://myntra-app-backend-production.up.railway.app",""],
+    credentials: true,
+}));
 
 app.use("/product", productRoutes);
 app.use("/user", userRoutes);
