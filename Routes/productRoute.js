@@ -4,7 +4,7 @@ const productRouter = express.Router();
 const {auth}  = require("../Middlewares/authMiddleware");
 
 //Create Product
-productRouter.post("/add",auth, async (req, res, next) => {
+productRouter.post("/add", async (req, res, next) => {
   try {
     const product = new ProductModel(req.body);
     await product.save()
@@ -18,7 +18,7 @@ productRouter.post("/add",auth, async (req, res, next) => {
 });
 
 //get all products
-productRouter.get("/", async (req, res) => {
+productRouter.get("/",auth, async (req, res) => {
   try {
     let {
       keyword,

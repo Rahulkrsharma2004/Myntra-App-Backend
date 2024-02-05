@@ -14,15 +14,10 @@ const cartRouter = require("./Routes/cartRoute");
 const PORT = process.env.PORT
 
 app.use(express.json());
+app.use(cookieParser());
 app.use(cors({
     origin: ["http://localhost:5173","https://myntra-app-backend-production.up.railway.app","https://myntra-frontend-app.netlify.app"],
     credentials: true,
-}));
-
-app.use(cookieParser({
-    httpOnly:true,
-    secure:true,
-    sameSite:"none"
 }));
 
 app.use("/product", productRouter);

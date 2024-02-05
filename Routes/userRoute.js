@@ -74,7 +74,7 @@ userRouter.post("/login", async (req, res) => {
     } catch (error) {
         res.status(400).json({message:error})
     }
-})
+})                         
 
 const isValidPassword = (pass) => {
     const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
@@ -84,6 +84,7 @@ const isValidPassword = (pass) => {
 userRouter.post("/logout", async (req, res) => {
   try {   
       const token = req.cookies.ACCESS_TOKEN
+      console.log(token)
       const blacklistToken = new BlacklistToken({token})
       await blacklistToken.save()
       res.status(200).send("Logout Successfully")
