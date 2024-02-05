@@ -1,11 +1,9 @@
-//imports
 require("dotenv").config();
 const express = require("express");
 const app = express();
 const cors = require("cors");
 const connection = require('./db')
 const cookieParser = require("cookie-parser")
-// const {BlacklistToken}  = require("./Models/BlacklistModel")
 
 const productRouter = require("./Routes/productRoute");
 const userRouter = require("./Routes/userRoute");
