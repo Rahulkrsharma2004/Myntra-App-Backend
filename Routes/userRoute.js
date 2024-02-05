@@ -1,95 +1,97 @@
-const User = require("../Models/userModel");
-const express = require("express");
-const app = express.Router();
-const jwt = require("jsonwebtoken");
-const { isAuthenticated } = require("../Middlewares/authMiddleware");
-require('dotenv').config()
+const express = require("express")
+const dotenv = require('dotenv').config()
+const { UserModel } = require("../Models/userModel")
+const userRouter = express.Router()
+const jwt = require('jsonwebtoken');
+const bcrypt = require("bcrypt")
+const cookieParser = require("cookie-parser")
+const {auth} = require("../Middlewares/authMiddleware")
+const {BlacklistToken}  = require("../Models/BlacklistModel")
 
-//Register User
-app.post("/register", async (req, res) => {
-  try {
-    const { email } = req.body;
-    const getUser = await User.findOne({ email });
-    if (getUser) {
-      return res.send({ message: "User already exists" });
+
+const access_secretKey = process.env.ACCESS_SECRET_KEY
+const refresh_secretKey = process.env.REFRESH_SECRET_KEY
+
+// authRouter.use(cookieParser());
+
+userRouter.post("/register", async (req, res) => {
+
+    const { username, email, pass} = req.body
+    console.log(req.body)
+    try {
+
+         if (!isValidPassword(pass)) {
+            return res.status(200).json({ error: 'Invalid password format' });
+        }
+ 
+
+        const existingUser = await UserModel.findOne({ email });
+        if (existingUser) {
+            return res.status(200).json({ error: 'User with this email already exists' });
+        }
+
+        bcrypt.hash(pass, 5, async function (err, hash) {
+            if (err) {
+                res.send({ "msg": err })
+            }
+            else {
+                const user = new UserModel({ username, email, pass: hash})
+                await user.save()
+                res.status(200).send({ "msg": "New user has been created" })
+            }
+        })
+
+    } catch (error) {
+        res.status(400).send({ "msg": error })
     }
-    const user = await User.create(req.body);
-    const token = jwt.sign({ _id: user._id }, process.env.ACCESS_SECRET_KEY, {
-      expiresIn: process.env.JWT_EXPIRE,
-    });
-    return res
-      .status(201)
-      .send({ message: "user registered successfully", token, user });
-  } catch (error) {
-    return res.status(404).send({ error: error.message });
-  }
-});
+})
 
-//User login
-app.post("/login", async (req, res) => {
-  const { email, password } = req.body;
-  try {
-    const user = await User.findOne({ email });
-    if (!user) {
-      return res.send({ message: "User does not exist" });
+userRouter.post("/login", async (req, res) => {
+    const { email, pass } = req.body
+    const cookieOptions={httpOnly:true,secure:true,sameSite:"none"}
+    try {
+        const user = await UserModel.findOne({ email })
+        console.log(user)
+        if (user) {
+            bcrypt.compare(pass, user.pass, function (err, result) {
+                if (result) {
+                    const token = jwt.sign({userID:user._id,user:user.username}, access_secretKey ,{expiresIn:"1h"});
+                    const refresh_token = jwt.sign({userID:user._id,user:user.username}, refresh_secretKey ,{expiresIn:"7d"});
+                    res.cookie("ACCESS_TOKEN",token,cookieOptions)
+                    res.cookie("REFRESH_TOKEN",refresh_token,cookieOptions)
+                    res.status(200).send({ "msg": "Login Successful","token":token})
+                    
+                } else {
+                    res.status(200).send({ "msg": "Register first or Wrong crendential" })
+                }
+
+            });
+
+        }else{
+            res.status(404).send("User not found")
+        }
+
+    } catch (error) {
+        res.status(400).json({message:error})
     }
-    if (user.password != password) {
-      return res.send({ message: "Password is incorrect" });
-    }
-    const token = jwt.sign({ _id: user._id }, process.env.ACCESS_SECRET_KEY, {
-      expiresIn: process.env.JWT_EXPIRE,
-    });
-    return res.status(200).send({ message: "Login successful", token, user });
-  } catch (error) {
-    return res.send({ message: "Something went wrong" });
-  }
-});
+})
 
-//get users
-app.get("/", async (req, res) => {
-  try {
-    const user = await User.find();
-    return res.status(200).send({ success: true, user });
-  } catch (error) {
-    return res.status(404).send({ error: error.message });
-  }
-});
+const isValidPassword = (pass) => {
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    return passwordRegex.test(pass);
+};
 
-//get users details
-app.get("/details", async (req, res) => {
-  try {
-    const user = await User.findById(req.query.id);
-    return res.status(200).send({ success: true, user });
+userRouter.post("/logout", async (req, res) => {
+  try {   
+      const token = req.cookies.ACCESS_TOKEN
+      const blacklistToken = new BlacklistToken({token})
+      await blacklistToken.save()
+      res.status(200).send("Logout Successfully")
   } catch (error) {
-    return res.status(404).send({ error: error.message });
+      res.status(500).json({ message: 'Internal Server Error' });
   }
-});
+})
 
-//update user
-app.put("/update/:userID", async (req, res, next) => {
-  try {
-    const user = await User.findByIdAndUpdate(req.query.id, req.body, {
-      new: true,
-      runValidators: true,
-    });
-    return res.status(200).send({ message: "User updated successfully", user });
-  } catch (error) {
-    return res.status(404).send({ error: error.message });
-  }
-});
 
-//delete user
-app.delete("/delete/:userID", async (req, res, next) => {
-  try {
-    const user = await User.findByIdAndDelete(req.query.id);
-    return res.status(200).send({
-      success: true,
-      message: "User deleted successfully",
-      user,
-    });
-  } catch (error) {
-    return res.status(404).send({ error: error.message });
-  }
-});
 
-module.exports = app;
+module.exports = userRouter;

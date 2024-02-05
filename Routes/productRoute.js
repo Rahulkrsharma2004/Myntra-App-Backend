@@ -1,12 +1,14 @@
-const Product = require("../Models/productModel");
+const ProductModel = require("../Models/productModel");
 const express = require("express");
-const app = express.Router();
-const {isAuthenticated, isAuthorize}  = require("../Middlewares/authMiddleware");
+const productRouter = express.Router();
+const {auth}  = require("../Middlewares/authMiddleware");
 
 //Create Product
-app.post("/new", async (req, res, next) => {
+productRouter.post("/add",auth, async (req, res, next) => {
   try {
-    const product = await Product.create(req.body);
+    const product = new ProductModel(req.body);
+    await product.save()
+    console.log(product)
     return res
       .status(201)
       .send({ message: "Product added successfully", product });
@@ -16,7 +18,7 @@ app.post("/new", async (req, res, next) => {
 });
 
 //get all products
-app.get("/", async (req, res) => {
+productRouter.get("/", async (req, res) => {
   try {
     let {
       keyword,
@@ -84,9 +86,9 @@ app.get("/", async (req, res) => {
       
     let totalProduct;
     if (gender) {
-      totalProduct = await Product.find({ gender });
+      totalProduct = await ProductModel.find({ gender });
     } else {
-      totalProduct = await Product.find();
+      totalProduct = await ProductModel.find();
     }
     if (!products) {
       return res.status(404).send({ message: "Product not found" });
@@ -102,9 +104,9 @@ app.get("/", async (req, res) => {
 });
 
 //get single product
-app.get("/:id", async (req, res) => {
+productRouter.get("/:id", async (req, res) => {
   try {
-    const product = await Product.findById(req.params.id);
+    const product = await ProductModel.findById(req.params.id);
     return res.status(200).send({ success: true, product });
   } catch (error) {
     return res.status(404).send({ error: error.message });
@@ -112,9 +114,9 @@ app.get("/:id", async (req, res) => {
 });
 
 //update product
-app.put("/update", async (req, res, next) => {
+productRouter.put("/update",auth, async (req, res, next) => {
   try {
-    const product = await Product.findByIdAndUpdate(req.query.id, req.body, {
+    const product = await ProductModel.findByIdAndUpdate(req.query.id, req.body, {
       new: true,
     });
     return res
@@ -126,9 +128,9 @@ app.put("/update", async (req, res, next) => {
 });
 
 //delete product
-app.delete("/delete", async (req, res, next) => {
+productRouter.delete("/delete",auth, async (req, res, next) => {
   try {
-    const product = await Product.findByIdAndDelete(req.query.id);
+    const product = await ProductModel.findByIdAndDelete(req.query.id);
     return res.status(200).send({
       success: true,
       message: "Product deleted successfully",
@@ -140,7 +142,7 @@ app.delete("/delete", async (req, res, next) => {
 });
 
 // create & update review
-app.put("/review", async (req, res, next) => {
+productRouter.put("/review", async (req, res, next) => {
   const { ratings, comment, productId, userId, name } = req.body;
   const review = {
     user: userId,
@@ -150,7 +152,7 @@ app.put("/review", async (req, res, next) => {
   };
 
   try {
-    const product = await Product.findById(productId);
+    const product = await ProductModel.findById(productId);
 
     const isReview = product.reviews.find(
       (rev) => rev.user.toString() === userId.toString()
@@ -185,9 +187,9 @@ app.put("/review", async (req, res, next) => {
 });
 
 //delete review
-app.delete("/review/delete", async (req, res, next) => {
+productRouter.delete("/review/delete", async (req, res, next) => {
   try {
-    const product = await Product.findById(req.query.productId);
+    const product = await ProductModel.findById(req.query.productId);
 
     const review = product.reviews.filter(
       (rev) => rev._id.toString() !== req.query.revId.toString()
@@ -213,4 +215,4 @@ app.delete("/review/delete", async (req, res, next) => {
   }
 });
 
-module.exports = app;
+module.exports = productRouter;

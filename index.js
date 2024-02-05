@@ -4,23 +4,31 @@ const express = require("express");
 const app = express();
 const cors = require("cors");
 const connection = require('./db')
+const cookieParser = require("cookie-parser")
+// const {BlacklistToken}  = require("./Models/BlacklistModel")
 
-const productRoutes = require("./Routes/productRoute");
-const userRoutes = require("./Routes/userRoute");
-const orderRoutes = require("./Routes/orderRoute");
-const cartRoutes = require("./Routes/cartRoute");
+const productRouter = require("./Routes/productRoute");
+const userRouter = require("./Routes/userRoute");
+const orderRouter = require("./Routes/orderRoute");
+const cartRouter = require("./Routes/cartRoute");
 const PORT = process.env.PORT
 
 app.use(express.json());
 app.use(cors({
-    origin: ["http://localhost:5173","https://myntra-app-backend-production.up.railway.app",""],
+    origin: ["http://localhost:5173","https://myntra-app-backend-production.up.railway.app","https://myntra-frontend-app.netlify.app"],
     credentials: true,
 }));
 
-app.use("/product", productRoutes);
-app.use("/user", userRoutes);
-app.use("/order", orderRoutes);
-app.use("/cart", cartRoutes);
+app.use(cookieParser({
+    httpOnly:true,
+    secure:true,
+    sameSite:"none"
+}));
+
+app.use("/product", productRouter);
+app.use("/user", userRouter);
+app.use("/order", orderRouter);
+app.use("/cart", cartRouter);
 
 
 app.listen(PORT, async () => {

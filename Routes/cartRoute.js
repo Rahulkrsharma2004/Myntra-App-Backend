@@ -1,9 +1,9 @@
 const Cart = require("../Models/cartModel");
 const express = require("express");
-const { isAuthenticated }  = require("../Middlewares/authMiddleware");
-const app = express.Router();
+const { auth }  = require("../Middlewares/authMiddleware");
+const cartRouter = express.Router();
 
-app.get("/", async (req, res) => {
+cartRouter.get("/",auth, async (req, res) => {
   const userId = req.body.userId;
   try {
     const carts = await Cart.find({ userId }).populate("productId");
@@ -13,7 +13,7 @@ app.get("/", async (req, res) => {
   }
 });
 
-app.post("/", isAuthenticated, async (req, res) => {
+cartRouter.post("/", auth, async (req, res) => {
   try {
     const { userId, productId, quantity } = req.body;
     const isProductExist = await Cart.findOne({ productId, userId });
@@ -32,7 +32,7 @@ app.post("/", isAuthenticated, async (req, res) => {
   }
 });
 
-app.put("/", async (req, res) => {
+cartRouter.put("/", async (req, res) => {
   try {
     const { id, userId, quantity } = req.body;
     const cartItem = await Cart.findById(id);
@@ -54,7 +54,7 @@ app.put("/", async (req, res) => {
   }
 });
 
-app.delete("/", async (req, res) => {
+cartRouter.delete("/", async (req, res) => {
   try {
     const { id, userId } = req.body;
     const cartItem = await Cart.findById(id);
@@ -73,4 +73,4 @@ app.delete("/", async (req, res) => {
   }
 });
 
-module.exports = app;
+module.exports = cartRouter;

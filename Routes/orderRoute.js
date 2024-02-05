@@ -1,11 +1,11 @@
 const Product = require("../Models/productModel");
 const Order = require("../Models/orderModel");
 const express = require("express");
-const app = express.Router();
-const auth = require("../Middlewares/authMiddleware");
+const orderRouter = express.Router();
+const {auth} = require("../Middlewares/authMiddleware");
 
 //Create order
-app.post("/new", async (req, res, next) => {
+orderRouter.post("/new",auth, async (req, res, next) => {
   const {
     shippingInfo,
     orderItems,
@@ -38,7 +38,7 @@ app.post("/new", async (req, res, next) => {
 });
 
 // get single order
-app.get("", async (req, res) => {
+orderRouter.get("", auth,async (req, res) => {
   try {
     const order = await Order.findById(req.query.id).populate(
       "user",
@@ -54,7 +54,7 @@ app.get("", async (req, res) => {
 });
 
 // get orders of logged in user
-app.get("/user", async (req, res) => {
+orderRouter.get("/user", async (req, res) => {
   try {
     const order = await Order.find({ user: req.query.id });
     if (order.length === 0) {
@@ -67,7 +67,7 @@ app.get("/user", async (req, res) => {
 });
 
 // get all orders
-app.get("/all", async (req, res) => {
+orderRouter.get("/all", auth,async (req, res) => {
   try {
     const orders = await Order.find();
     if (orders.length === 0) {
@@ -84,7 +84,7 @@ app.get("/all", async (req, res) => {
 });
 
 //update order status
-app.put("/update", async (req, res) => {
+orderRouter.put("/update", auth,async (req, res) => {
   try {
     const order = await Order.findById(req.query.id);
 
@@ -119,7 +119,7 @@ async function updateStock(id, quantity) {
 }
 
 //delete order
-app.delete("/delete", async (req, res) => {
+orderRouter.delete("/delete", auth,async (req, res) => {
   try {
     const order = await Order.findById(req.query.id);
     await order.remove();
@@ -132,4 +132,4 @@ app.delete("/delete", async (req, res) => {
   }
 });
 
-module.exports = app;
+module.exports = orderRouter;
