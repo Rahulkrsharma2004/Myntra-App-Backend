@@ -4,7 +4,9 @@ const productRouter = express.Router();
 const {auth}  = require("../Middlewares/authMiddleware");
 
 //Create Product
-productRouter.post("/add", async (req, res, next) => {
+productRouter.post("/add",auth, async (req, res, next) => {
+  return res.send('Checking cookies')
+
   try {
     const product = new ProductModel(req.body);
     await product.save()

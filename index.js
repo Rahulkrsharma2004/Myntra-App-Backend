@@ -14,7 +14,14 @@ const PORT = process.env.PORT
 app.use(express.json());
 app.use(cookieParser());
 app.use(cors({
-    origin: ["http://localhost:5173","https://myntra-app-backend-production.up.railway.app","https://myntra-frontend-app.netlify.app"],
+    origin: (origin, callback)=>{
+        console.log("Origin",origin)
+        if(["http://localhost:5173","https://myntra-app-backend-production.up.railway.app","https://myntra-frontend-app.netlify.app", "https://www.thunderclient.com" ].indexOf(origin)!=-1 || !origin ){
+            callback(null, true);
+        }else{
+            callback(new Error("Origin not allowed"))
+        }
+    },
     credentials: true,
 }));
 

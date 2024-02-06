@@ -5,8 +5,8 @@ const userRouter = express.Router()
 const jwt = require('jsonwebtoken');
 const bcrypt = require("bcrypt")
 const cookieParser = require("cookie-parser")
-const {auth} = require("../Middlewares/authMiddleware")
-const {BlacklistToken}  = require("../Models/BlacklistModel")
+const { auth } = require("../Middlewares/authMiddleware")
+const { BlacklistToken } = require("../Models/BlacklistModel")
 
 
 const access_secretKey = process.env.ACCESS_SECRET_KEY
@@ -16,14 +16,14 @@ userRouter.use(cookieParser());
 
 userRouter.post("/register", async (req, res) => {
 
-    const { username, email, pass} = req.body
+    const { username, email, pass } = req.body
     console.log(req.body)
     try {
 
         if (!isValidPassword(pass)) {
             return res.status(200).json({ error: 'Invalid password format' });
         }
- 
+
 
         const existingUser = await UserModel.findOne({ email });
         if (existingUser) {
@@ -35,7 +35,7 @@ userRouter.post("/register", async (req, res) => {
                 res.send({ "msg": err })
             }
             else {
-                const user = new UserModel({ username, email, pass: hash})
+                const user = new UserModel({ username, email, pass: hash })
                 await user.save()
                 res.status(200).send({ "msg": "New user has been created" })
             }
@@ -48,33 +48,33 @@ userRouter.post("/register", async (req, res) => {
 
 userRouter.post("/login", async (req, res) => {
     const { email, pass } = req.body
-    const cookieOptions={httpOnly:true,secure:true,sameSite:"none"}
+    const cookieOptions = { httpOnly: true, maxAge: 7 * 24 * 60 * 60 * 60 }
     try {
         const user = await UserModel.findOne({ email })
         console.log(user)
         if (user) {
             bcrypt.compare(pass, user.pass, function (err, result) {
                 if (result) {
-                    const ACCESS_TOKEN = jwt.sign({userID:user._id,user:user.username}, access_secretKey ,{expiresIn:"1h"});
-                    const REFRESH_TOKEN = jwt.sign({userID:user._id,user:user.username}, refresh_secretKey ,{expiresIn:"7d"});
-                    res.cookie("ACCESS_TOKEN",ACCESS_TOKEN,cookieOptions)
-                    res.cookie("REFRESH_TOKEN",REFRESH_TOKEN,cookieOptions)
-                    res.status(200).send({ "msg": "Login Successful","ACCESS_TOKEN":ACCESS_TOKEN})
-                    
+                    const ACCESS_TOKEN = jwt.sign({ userID: user._id, user: user.username }, access_secretKey, { expiresIn: "1h" });
+                    const REFRESH_TOKEN = jwt.sign({ userID: user._id, user: user.username }, refresh_secretKey, { expiresIn: "7d" });
+                    res.cookie("token", ACCESS_TOKEN, cookieOptions)
+                    res.cookie("refresh", REFRESH_TOKEN, cookieOptions)
+                    res.status(200).send({ "msg": "Login Successful", "ACCESS_TOKEN": ACCESS_TOKEN })
+
                 } else {
                     res.status(200).send({ "msg": "Register first or Wrong crendential" })
                 }
 
             });
 
-        }else{
+        } else {
             res.status(404).send("User not found")
         }
 
     } catch (error) {
-        res.status(400).json({message:error.message})
+        res.status(400).json({ message: error.message })
     }
-})                         
+})
 
 const isValidPassword = (pass) => {
     const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
@@ -82,15 +82,20 @@ const isValidPassword = (pass) => {
 };
 
 userRouter.post("/logout", async (req, res) => {
-  try {   
-      const ACCESS_TOKEN = req.cookies.ACCESS_TOKEN
-      console.log(ACCESS_TOKEN)
-      const blacklistToken = new BlacklistToken({ACCESS_TOKEN})
-      await blacklistToken.save()
-      res.status(200).send("Logout Successfully")
-  } catch (error) {
-      res.status(500).json({ message: 'Internal Server Error' });
-  }
+    try {
+        const ACCESS_TOKEN = req.cookies.ACCESS_TOKEN;
+        if (!ACCESS_TOKEN) {
+            return res.status(400).json({ message: 'Access token not provided' });
+        }
+
+        const blacklistToken = new BlacklistToken({ ACCESS_TOKEN })
+        await blacklistToken.save()
+        res.clearCookie('ACCESS_TOKEN')
+        res.status(200).send("Logout Successfully")
+
+    } catch (error) {
+        res.status(500).json({ message: 'Internal Server Error' });
+    }
 })
 
 

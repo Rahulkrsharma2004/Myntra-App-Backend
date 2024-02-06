@@ -8,11 +8,12 @@ const access_secretKey = process.env.ACCESS_SECRET_KEY
 const refresh_secretKey = process.env.REFRESH_SECRET_KEY
 
 const auth = async (req, res, next) => {
-  
-  console.log("line12",req.cookies)
+  console.log("access okten", req.cookies.access_token);
+  console.log("ACCCESS_TOKEN", req.cookies.ACCESS_TOKEN)
 
+  next();
   try {
-    const blacklistExists = await BlacklistToken.findOne({ token:ACCESS_TOKEN })
+    const blacklistExists = await BlacklistToken.findOne({ token: ACCESS_TOKEN })
     console.log(blacklistExists)
     if (blacklistExists) {
       throw new Error("Please login again !")
@@ -25,7 +26,7 @@ const auth = async (req, res, next) => {
 
       } else {
         jwt.verify(refresh_token, refresh_secretKey, (err, decode) => {
-          const cookieOptions = { httpOnly: true, secure: true, sameSite: "none" }
+          const cookieOptions = { httpOnly: true, secure: true, sameSite: "none" ,domain: "localhost"}
           if (decode) {
             const token = jwt.sign({ userID: decode._id, user: decode.username }, access_secretKey, { expiresIn: "1h" })
             res.cookie("ACCESS_TOKEN", token, cookieOptions)
@@ -38,7 +39,7 @@ const auth = async (req, res, next) => {
     });
   }
   catch (error) {
-    res.status(400).send({ "error": error})
+    res.status(400).send({ "error": error })
     console.log(error)
   }
 
