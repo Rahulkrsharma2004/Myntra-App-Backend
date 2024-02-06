@@ -12,7 +12,7 @@ const {BlacklistToken}  = require("../Models/BlacklistModel")
 const access_secretKey = process.env.ACCESS_SECRET_KEY
 const refresh_secretKey = process.env.REFRESH_SECRET_KEY
 
-authRouter.use(cookieParser());
+userRouter.use(cookieParser());
 
 userRouter.post("/register", async (req, res) => {
 
