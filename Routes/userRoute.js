@@ -12,7 +12,7 @@ const {BlacklistToken}  = require("../Models/BlacklistModel")
 const access_secretKey = process.env.ACCESS_SECRET_KEY
 const refresh_secretKey = process.env.REFRESH_SECRET_KEY
 
-// authRouter.use(cookieParser());
+authRouter.use(cookieParser());
 
 userRouter.post("/register", async (req, res) => {
 
@@ -20,9 +20,9 @@ userRouter.post("/register", async (req, res) => {
     console.log(req.body)
     try {
 
-         if (!isValidPassword(pass)) {
-            return res.status(200).json({ error: 'Invalid password format' });
-        }
+        // if (!isValidPassword(pass)) {
+        //     return res.status(200).json({ error: 'Invalid password format' });
+        // }
  
 
         const existingUser = await UserModel.findOne({ email });
