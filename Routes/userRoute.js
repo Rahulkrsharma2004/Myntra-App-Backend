@@ -20,9 +20,9 @@ userRouter.post("/register", async (req, res) => {
     console.log(req.body)
     try {
 
-        // if (!isValidPassword(pass)) {
-        //     return res.status(200).json({ error: 'Invalid password format' });
-        // }
+        if (!isValidPassword(pass)) {
+            return res.status(200).json({ error: 'Invalid password format' });
+        }
  
 
         const existingUser = await UserModel.findOne({ email });
@@ -55,11 +55,11 @@ userRouter.post("/login", async (req, res) => {
         if (user) {
             bcrypt.compare(pass, user.pass, function (err, result) {
                 if (result) {
-                    const token = jwt.sign({userID:user._id,user:user.username}, access_secretKey ,{expiresIn:"1h"});
-                    const refresh_token = jwt.sign({userID:user._id,user:user.username}, refresh_secretKey ,{expiresIn:"7d"});
-                    res.cookie("ACCESS_TOKEN",token,cookieOptions)
-                    res.cookie("REFRESH_TOKEN",refresh_token,cookieOptions)
-                    res.status(200).send({ "msg": "Login Successful","token":token})
+                    const ACCESS_TOKEN = jwt.sign({userID:user._id,user:user.username}, access_secretKey ,{expiresIn:"1h"});
+                    const REFRESH_TOKEN = jwt.sign({userID:user._id,user:user.username}, refresh_secretKey ,{expiresIn:"7d"});
+                    res.cookie("ACCESS_TOKEN",ACCESS_TOKEN,cookieOptions)
+                    res.cookie("REFRESH_TOKEN",REFRESH_TOKEN,cookieOptions)
+                    res.status(200).send({ "msg": "Login Successful","ACCESS_TOKEN":ACCESS_TOKEN})
                     
                 } else {
                     res.status(200).send({ "msg": "Register first or Wrong crendential" })
@@ -72,7 +72,7 @@ userRouter.post("/login", async (req, res) => {
         }
 
     } catch (error) {
-        res.status(400).json({message:error})
+        res.status(400).json({message:error.message})
     }
 })                         
 
@@ -83,9 +83,9 @@ const isValidPassword = (pass) => {
 
 userRouter.post("/logout", async (req, res) => {
   try {   
-      const token = req.cookies.ACCESS_TOKEN
-      console.log(token)
-      const blacklistToken = new BlacklistToken({token})
+      const ACCESS_TOKEN = req.cookies.ACCESS_TOKEN
+      console.log(ACCESS_TOKEN)
+      const blacklistToken = new BlacklistToken({ACCESS_TOKEN})
       await blacklistToken.save()
       res.status(200).send("Logout Successfully")
   } catch (error) {

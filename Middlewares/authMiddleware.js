@@ -10,9 +10,6 @@ const refresh_secretKey = process.env.REFRESH_SECRET_KEY
 const auth = async (req, res, next) => {
   
   console.log("line12",req.cookies)
-  const {ACCESS_TOKEN} = req.cookies
-  console.log("line14",ACCESS_TOKEN)
-  const refresh_token = req.cookies.REFRESH_TOKEN
 
   try {
     const blacklistExists = await BlacklistToken.findOne({ token:ACCESS_TOKEN })
@@ -37,7 +34,6 @@ const auth = async (req, res, next) => {
             res.status(400).send({ "msg": "Now you need to login again" })
           }
         })
-        res.status(400).send({ "error": err })
       }
     });
   }
