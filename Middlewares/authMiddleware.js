@@ -11,7 +11,6 @@ const auth = async (req, res, next) => {
   console.log("access okten", req.cookies.access_token);
   console.log("ACCCESS_TOKEN", req.cookies.ACCESS_TOKEN)
 
-  // next();
   try {
     const blacklistExists = await BlacklistToken.findOne({ token: ACCESS_TOKEN })
     console.log(blacklistExists)
