@@ -13,10 +13,25 @@ const PORT = process.env.PORT
 
 app.use(express.json());
 app.use(cookieParser());
+// app.use(cors({
+//     origin:
+//         ["http://localhost:5173", "https://myntra-app-backend-production.up.railway.app", "https://myntra-frontend-app.netlify.app", "https://www.thunderclient.com"],
+//     credentials: true,
+// }));
+
+const allowedOrigins= ["http://localhost:5173","https://myntra-app-backend-production.up.railway.app","https://myntra-frontend-app.netlify.app"]
 app.use(cors({
-    origin:
-        ["http://localhost:5173", "https://myntra-app-backend-production.up.railway.app", "https://myntra-frontend-app.netlify.app", "https://www.thunderclient.com"],
-    credentials: true,
+    origin:(origin,callback)=>{
+        console.log("Origin is", origin);
+        if(allowedOrigins.indexOf(origin)!==-1||!origin){
+            console.log("Origin allowed");
+            callback(null,true)
+        }
+        else{
+            callback(new Error("Not allowed by CORS"));
+        }
+    },
+    credentials:true
 }));
 
 app.use("/product", productRouter);
