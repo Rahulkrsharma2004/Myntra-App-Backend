@@ -81,7 +81,7 @@ const isValidPassword = (pass) => {
     return passwordRegex.test(pass);
 };
 
-userRouter.post("/logout", async (req, res) => {
+userRouter.post("/logout",auth, async (req, res) => {
     try {
         const ACCESS_TOKEN = req.cookies.ACCESS_TOKEN;
         if (!ACCESS_TOKEN) {
@@ -97,7 +97,5 @@ userRouter.post("/logout", async (req, res) => {
         res.status(500).json({ message: 'Internal Server Error' });
     }
 })
-
-
 
 module.exports = userRouter;
