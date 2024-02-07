@@ -81,7 +81,7 @@ const isValidPassword = (pass) => {
     return passwordRegex.test(pass);
 };
 
-userRouter.post("/logout",auth, async (req, res) => {
+userRouter.post("/logout", async (req, res) => {
     try {
         const ACCESS_TOKEN = req.cookies.ACCESS_TOKEN;
         if (!ACCESS_TOKEN) {
