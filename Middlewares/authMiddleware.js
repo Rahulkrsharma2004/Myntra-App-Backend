@@ -11,7 +11,7 @@ const auth = async (req, res, next) => {
   console.log("access okten", req.cookies.access_token);
   console.log("ACCCESS_TOKEN", req.cookies.ACCESS_TOKEN)
 
-  next();
+  // next();
   try {
     const blacklistExists = await BlacklistToken.findOne({ token: ACCESS_TOKEN })
     console.log(blacklistExists)
@@ -32,15 +32,16 @@ const auth = async (req, res, next) => {
             res.cookie("ACCESS_TOKEN", token, cookieOptions)
             next()
           } else {
-            res.status(400).send({ "msg": "Now you need to login again" })
+           return res.status(400).send({ "msg": "Now you need to login again" })
           }
         })
       }
     });
   }
   catch (error) {
-    res.status(400).send({ "error": error })
     console.log(error)
+    return res.status(400).send({ "error": error })
+    
   }
 
 
