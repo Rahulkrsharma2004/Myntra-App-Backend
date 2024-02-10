@@ -81,7 +81,7 @@ const isValidPassword = (pass) => {
     return passwordRegex.test(pass);
 };
 
-userRouter.post("/logout", async (req, res) => {
+userRouter.post("/logout",async (req, res) => {
     try {
         const ACCESS_TOKEN = req.cookies.ACCESS_TOKEN;
         console.log("cookies", ACCESS_TOKEN);
@@ -89,7 +89,7 @@ userRouter.post("/logout", async (req, res) => {
             return res.status(400).json({ message: 'Access token not provided' });
         }
 
-        const blacklistToken = new BlacklistToken({ ACCESS_TOKEN: JSON.stringify(ACCESS_TOKEN) })
+        const blacklistToken = new BlacklistToken({ ACCESS_TOKEN: JSON.stringify(ACCESS_TOKEN)})
         await blacklistToken.save()
         res.clearCookie("ACCESS_TOKEN")
         res.status(200).send("Logout Successfully")

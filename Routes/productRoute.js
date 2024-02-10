@@ -19,7 +19,7 @@ productRouter.post("/add", async (req, res, next) => {
 });
 
 
-productRouter.get("/", auth,async (req, res) => {
+productRouter.get("/",async (req, res) => {
   try {
     let {
       keyword,
@@ -27,7 +27,6 @@ productRouter.get("/", auth,async (req, res) => {
       price,
       brand,
       color,
-      discount,
       sort,
       orderBy,
       limit,
@@ -65,11 +64,6 @@ productRouter.get("/", auth,async (req, res) => {
 
     if (color) {
       query.color = color;
-    }
-
-    if (discount) {
-      let [min, max] = discount.split(",");
-      query.discount = { $gte: min, $lte: max };
     }
 
     if (!limit) {
