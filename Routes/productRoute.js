@@ -1,7 +1,7 @@
 const ProductModel = require("../Models/productModel");
 const express = require("express");
 const productRouter = express.Router();
-const {auth}  = require("../Middlewares/authMiddleware");
+const { auth } = require("../Middlewares/authMiddleware");
 
 
 productRouter.post("/add", async (req, res, next) => {
@@ -24,6 +24,7 @@ productRouter.get("/", async (req, res) => {
     let {
       keyword,
       category,
+      subcategory,
       price,
       brand,
       color,
@@ -48,6 +49,18 @@ productRouter.get("/", async (req, res) => {
       } else {
         // Handle invalid category value
         return res.status(400).send({ message: "Invalid category value" });
+      }
+    }
+
+    if (subcategory) {
+      // Check for different category filters
+      if (subcategory === "T-Shirts" || subcategory === "Jeans" || subcategory === "Flip Flops" ||
+        subcategory === "Kurtas & Suits" || subcategory === "Sarees" || subcategory === "Heels" ||
+        subcategory === "T-Shirts" || subcategory === "Party Wear" || subcategory === "Trousers" || subcategory === "Face Wash" || subcategory === "Lip Stick" || subcategory === "Beauty Gift") {
+        query.subcategory = subcategory;
+      } else {
+        // Handle invalid category value
+        return res.status(400).send({ message: "Invalid subcategory value" });
       }
     }
 
@@ -79,6 +92,9 @@ productRouter.get("/", async (req, res) => {
     if (category) {
       totalProduct = await ProductModel.find({ category });
     }
+    if (subcategory) {
+      totalProduct = await ProductModel.find({ subcategory });
+    }
     if (!products) {
       return res.status(404).send({ message: "Product not found" });
     }
@@ -100,7 +116,7 @@ productRouter.get("/:id", async (req, res) => {
   }
 });
 
-productRouter.put("/update",auth, async (req, res, next) => {
+productRouter.put("/update", auth, async (req, res, next) => {
   try {
     const product = await ProductModel.findByIdAndUpdate(req.query.id, req.body, {
       new: true,
@@ -114,7 +130,7 @@ productRouter.put("/update",auth, async (req, res, next) => {
 });
 
 
-productRouter.delete("/delete",auth, async (req, res, next) => {
+productRouter.delete("/delete", auth, async (req, res, next) => {
   try {
     const product = await ProductModel.findByIdAndDelete(req.query.id);
     return res.status(200).send({
