@@ -91,6 +91,14 @@ productRouter.get("/", async (req, res) => {
   }
 });
 
+productRouter.get("/:id", async (req, res) => {
+  try {
+    const product = await ProductModel.findById(req.params.id);
+    return res.status(200).send({ success: true, product });
+  } catch (error) {
+    return res.status(404).send({ error: error.message });
+  }
+});
 
 productRouter.put("/update",auth, async (req, res, next) => {
   try {
