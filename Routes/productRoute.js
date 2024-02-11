@@ -19,7 +19,7 @@ productRouter.post("/add", async (req, res, next) => {
 });
 
 
-productRouter.get("/",async (req, res) => {
+productRouter.get("/", async (req, res) => {
   try {
     let {
       keyword,
@@ -28,14 +28,12 @@ productRouter.get("/",async (req, res) => {
       brand,
       color,
       sort,
-      orderBy,
       limit,
       page,
-      gender,
-      categories,
     } = req.query;
 
     const query = {};
+
     if (keyword) {
       query.title = {
         $regex: keyword,
@@ -44,13 +42,13 @@ productRouter.get("/",async (req, res) => {
     }
 
     if (category) {
-      query.category = category;
-    }
-    if (gender) {
-      query.gender = gender;
-    }
-    if (categories) {
-      query.categories = categories;
+      // Check for different category filters
+      if (category === "Men" || category === "Women" || category === "Kids" || category === "Beauty") {
+        query.category = category;
+      } else {
+        // Handle invalid category value
+        return res.status(400).send({ message: "Invalid category value" });
+      }
     }
 
     if (brand) {
@@ -75,36 +73,21 @@ productRouter.get("/",async (req, res) => {
     }
 
     const products = await ProductModel.find(query)
-      // .sort({ [sort]: orderBy === "asc" ? 1 : orderBy === "desc" ? -1 : 0 })
       .limit(+limit)
       .skip((+page - 1) * limit);
-      
-    let totalProduct;
-    if (gender) {
-      totalProduct = await ProductModel.find({ gender });
-    } else {
-      totalProduct = await ProductModel.find();
+
+    if (category) {
+      totalProduct = await ProductModel.find({ category });
     }
     if (!products) {
       return res.status(404).send({ message: "Product not found" });
     }
-    const productLength = products.length;
-    const totalPage = totalProduct.length / productLength;
+
     return res
       .status(200)
-      .send({ success: true, products, productLength, totalPage });
+      .send({ success: true, products });
   } catch (error) {
-    return res.status(404).send({ error: error.message });
-  }
-});
-
-
-productRouter.get("/:id", async (req, res) => {
-  try {
-    const product = await ProductModel.findById(req.params.id);
-    return res.status(200).send({ success: true, product });
-  } catch (error) {
-    return res.status(404).send({ error: error.message });
+    return res.status(500).send({ error: error.message });
   }
 });
 
