@@ -8,8 +8,14 @@ const ProductModel = require("../Models/productModel")
 cartRouter.get("/", async (req, res) => {
   // const userId = req.body.userId;
   try {
-    const carts = await CartModel.find().populate("productId");
-    return res.status(200).send({ success: true, carts });
+    const carts = await CartModel.find()
+    const myCart = await Promise.all(
+      carts.map(async(ele)=>{
+        const product = await ProductModel.findOne({_id:ele.productId})
+        return product
+      })
+    )
+    return res.status(200).send({ success: true, myCart });
   } catch (error) {
     return res.status(404).send({ message: error.message });
   }
