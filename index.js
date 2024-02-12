@@ -19,7 +19,7 @@ app.use(cookieParser());
 //     credentials: true,
 // }));
 
-const allowedOrigins= ["http://localhost:5173","https://myntra-app-backend-production.up.railway.app","https://myntra-frontend-app.netlify.app"]
+const allowedOrigins= ["http://localhost:5173","https://myntra-app-backend-production.up.railway.app","https://myntra-frontend-app.netlify.app","http://localhost:8080"]
 app.use(cors({
     origin:(origin,callback)=>{
         console.log("Origin is", origin);

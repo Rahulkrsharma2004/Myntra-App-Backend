@@ -5,9 +5,9 @@ const cartRouter = express.Router();
 
 
 cartRouter.get("/", async (req, res) => {
-  const userId = req.body.userId;
+  // const userId = req.body.userId;
   try {
-    const carts = await CartModel.find({ userId }).populate("productId");
+    const carts = await CartModel.find().populate("productId");
     return res.status(200).send({ success: true, carts });
   } catch (error) {
     return res.status(404).send({ message: error.message });
@@ -16,24 +16,22 @@ cartRouter.get("/", async (req, res) => {
 
 
 cartRouter.post("/add/:id", async (req, res) => {
+   const productId = req.params.id
+   console.log(productId)
+   
   try {
-    const productId = req.params.id
-    const { userId } = req.body;
-    const isProductExist = await CartModel.findOne({ productId, userId });
-    if (isProductExist) {
-      return res
-        .status(404)
-        .send({ message: "Product already exists in cart" });
-    }
-    const product = await ProductModel.findOne({_id:productId})
-    if(product){
-      const cart =  CartModel({ userId, productId });
+   
+    // const { userId } = req.body;
+   
+    // const product = await ProductModel.findOne({_id:productId})
+    // if(product){
+      const cart = new CartModel({ productId });
       await cart.save()
       return res.status(201).send({ message: `Product Added Successfully` });
-    } 
+    // } 
     
   } catch (error) {
-    return res.status(404).send({ message: "Something went wrong" });
+    return res.status(404).send({ message: "Something went wrong 123abc" });
   }
 });
 

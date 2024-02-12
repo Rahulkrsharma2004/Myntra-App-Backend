@@ -1,6 +1,5 @@
 const jwt = require("jsonwebtoken");
 const dotenv = require("dotenv").config()
-const cookieParser = require("cookie-parser")
 const { BlacklistToken } = require("../Models/BlacklistModel")
 const productRouter = require("../Routes/productRoute")
 
@@ -9,8 +8,7 @@ const refresh_secretKey = process.env.REFRESH_SECRET_KEY
 
 const auth = async (req, res, next) => {
   
-  console.log("access okten", req.cookies.access_token);
-  console.log("ACCCESS_TOKEN", req.cookies.ACCESS_TOKEN)
+  console.log(req.cookies,"line 12")
 
   try {
     const blacklistExists = await BlacklistToken.findOne({ token: ACCESS_TOKEN })

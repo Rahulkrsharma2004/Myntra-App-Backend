@@ -55,11 +55,11 @@ userRouter.post("/login", async (req, res) => {
         if (user) {
             bcrypt.compare(pass, user.pass, function (err, result) {
                 if (result) {
-                    const ACCESS_TOKEN = jwt.sign({ userID: user._id, user: user.username }, access_secretKey, { expiresIn: "1h" });
+                    const access_token = jwt.sign({ userID: user._id, user: user.username }, access_secretKey, { expiresIn: "1h" });
                     const REFRESH_TOKEN = jwt.sign({ userID: user._id, user: user.username }, refresh_secretKey, { expiresIn: "7d" });
-                    res.cookie("ACCESS_TOKEN", ACCESS_TOKEN, cookieOptions)
-                    res.cookie("REFRESH_TOKEN", REFRESH_TOKEN, cookieOptions)
-                    res.status(200).send({ "msg": "Login Successful", "ACCESS_TOKEN": ACCESS_TOKEN })
+                    res.cookie("access_token", access_token )
+                    res.cookie("REFRESH_TOKEN", REFRESH_TOKEN)
+                    res.status(200).send({ "msg": "Login Successful", "access_token": access_token })
 
                 } else {
                     res.status(200).send({ "msg": "Register first or Wrong crendential" })
