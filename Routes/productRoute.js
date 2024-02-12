@@ -78,7 +78,7 @@ productRouter.get("/", async (req, res) => {
     }
 
     if (!limit) {
-      limit = 30;
+      limit = 120;
     }
 
     if (!page) {
