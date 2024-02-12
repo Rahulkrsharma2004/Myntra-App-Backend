@@ -2,6 +2,7 @@ const CartModel = require("../Models/cartModel");
 const express = require("express");
 const { auth } = require("../Middlewares/authMiddleware");
 const cartRouter = express.Router();
+const ProductModel = require("../Models/productModel")
 
 
 cartRouter.get("/", async (req, res) => {
@@ -35,24 +36,24 @@ cartRouter.post("/add/:id", async (req, res) => {
   }
 });
 
+cartRouter.delete("/delete/:id", async (req, res) => {
+  const id = req.params.id;
+  try {
+    const productToDelete = await CartModel.findOne({ productId: id });
+    if (productToDelete) {
+      const idToDelete = productToDelete._id;
+      await CartModel.findByIdAndDelete(idToDelete);
+      const deletedProduct = await ProductModel.findOne({ _id: id });
+      res.status(200).json({
+        message: "Item is removed from cart!",
+        deletedProduct: deletedProduct,
+      });
+    } else
+      throw new Error("Product not found! please pass a valid product id!");
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
 
-// cartRouter.delete("/delete/:id", async (req, res) => {
-//   try {
-//     const { id, userId } = req.body;
-//     const cartItem = await CartModel.findById(id);
-//     if (cartItem && cartItem.userId.toString() === userId) {
-//       const cart = await CartModel.findByIdAndDelete(id)
-//         .populate("productId")
-//         .select("-userId");
-//       return res
-//         .status(200)
-//         .send({ message: `Deleted the product from cart successfully` });
-//     } else {
-//       return res.status(404).send({ message: "Item does not exist in cart" });
-//     }
-//   } catch (error) {
-//     return res.status(404).send({ message: "Something went wrong" });
-//   }
-// });
 
 module.exports = cartRouter;
