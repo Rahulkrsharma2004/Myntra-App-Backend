@@ -8,6 +8,7 @@ const access_secretKey = process.env.ACCESS_SECRET_KEY
 const refresh_secretKey = process.env.REFRESH_SECRET_KEY
 
 const auth = async (req, res, next) => {
+  
   console.log("access okten", req.cookies.access_token);
   console.log("ACCCESS_TOKEN", req.cookies.ACCESS_TOKEN)
 
