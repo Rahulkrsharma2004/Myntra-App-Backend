@@ -4,7 +4,6 @@ const app = express();
 const cors = require("cors");
 const connection = require('./db')
 const cookieParser = require("cookie-parser")
-
 const productRouter = require("./Routes/productRoute");
 const userRouter = require("./Routes/userRoute");
 const orderRouter = require("./Routes/orderRoute");
@@ -13,31 +12,17 @@ const PORT = process.env.PORT
 
 app.use(express.json());
 app.use(cookieParser());
-// app.use(cors({
-//     origin:
-//         ["http://localhost:5173", "https://myntra-app-backend-production.up.railway.app", "https://myntra-frontend-app.netlify.app", "https://www.thunderclient.com"],
-//     credentials: true,
-// }));
 
-const allowedOrigins= ["http://localhost:5173","https://myntra-app-backend-production.up.railway.app","https://myntra-frontend-app.netlify.app","http://localhost:8080"]
 app.use(cors({
-    origin:(origin,callback)=>{
-        console.log("Origin is", origin);
-        if(allowedOrigins.indexOf(origin)!==-1||!origin){
-            console.log("Origin allowed");
-            callback(null,true)
-        }
-        else{
-            callback(new Error("Not allowed by CORS"));
-        }
-    },
-    credentials:true
+    origin:
+        ["http://localhost:5173", "https://myntra-app-backend-production.up.railway.app", "https://myntra-frontend-app.netlify.app"],
+    credentials: true,
 }));
 
-app.use("/product", productRouter);
-app.use("/user", userRouter);
-app.use("/order", orderRouter);
-app.use("/cart", cartRouter);
+app.use("/products", productRouter);
+app.use("/users", userRouter);
+app.use("/orders", orderRouter);
+app.use("/carts", cartRouter);
 
 
 app.listen(PORT, async () => {

@@ -1,11 +1,9 @@
 const express = require("express")
-const dotenv = require('dotenv').config()
 const { UserModel } = require("../Models/userModel")
 const userRouter = express.Router()
 const jwt = require('jsonwebtoken');
 const bcrypt = require("bcrypt")
 const cookieParser = require("cookie-parser")
-const { auth } = require("../Middlewares/authMiddleware")
 const { BlacklistToken } = require("../Models/BlacklistModel")
 
 
@@ -48,18 +46,18 @@ userRouter.post("/register", async (req, res) => {
 
 userRouter.post("/login", async (req, res) => {
     const { email, pass } = req.body
-    const cookieOptions={httpOnly:true,secure:true,sameSite:"none"}
+    const cookieOptions = { httpOnly: true, secure: true, sameSite: "none" }
     try {
         const user = await UserModel.findOne({ email })
         console.log(user)
         if (user) {
             bcrypt.compare(pass, user.pass, function (err, result) {
                 if (result) {
-                    const access_token = jwt.sign({ userID: user._id, user: user.username }, access_secretKey, { expiresIn: "1h" });
+                    const ACCESS_TOKEN = jwt.sign({ userID: user._id, user: user.username }, access_secretKey, { expiresIn: "1h" });
                     const REFRESH_TOKEN = jwt.sign({ userID: user._id, user: user.username }, refresh_secretKey, { expiresIn: "7d" });
-                    res.cookie("access_token", access_token )
+                    res.cookie("ACCESS_TOKEN", ACCESS_TOKEN)
                     res.cookie("REFRESH_TOKEN", REFRESH_TOKEN)
-                    res.status(200).send({ "msg": "Login Successful", "access_token": access_token })
+                    res.status(200).send({ "msg": "Login Successful", "ACCESS_TOKEN": ACCESS_TOKEN })
 
                 } else {
                     res.status(200).send({ "msg": "Register first or Wrong crendential" })
@@ -81,23 +79,22 @@ const isValidPassword = (pass) => {
     return passwordRegex.test(pass);
 };
 
-userRouter.post("/logout",async (req, res) => {
+userRouter.post("/logout", async (req, res) => {
     try {
-        const token = req.cookies.access_token;
+        const token = req.cookies.ACCESS_TOKEN;
         console.log("cookies", token);
-        if (!token) {
-            return res.status(400).json({ message: 'Access token not provided' });
-        }
-
-        const blacklistToken = new BlacklistToken(token)
+        const blacklistToken = new BlacklistToken({ ACCESS_TOKEN: token });
         await blacklistToken.save()
-        res.clearCookie("access_token")
+        console.log(blacklistToken)
+        res.clearCookie("ACCESS_TOKEN")
         res.status(200).send("Logout Successfully")
-
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: 'Internal Server Error' });
     }
-})
+});
+
+module.exports = userRouter;
+
 
 module.exports = userRouter;

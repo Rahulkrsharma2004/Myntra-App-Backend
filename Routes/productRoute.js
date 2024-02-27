@@ -19,7 +19,7 @@ productRouter.post("/add", async (req, res, next) => {
 });
 
 
-productRouter.get("/", async (req, res) => {
+productRouter.get("/",auth,async (req, res) => {
   try {
     let {
       keyword,
@@ -130,14 +130,22 @@ productRouter.put("/update", auth, async (req, res, next) => {
 });
 
 
-productRouter.delete("/delete", auth, async (req, res, next) => {
+productRouter.delete("/delete/:productID", auth, async (req, res) => {
+  const {productID} = req.params
   try {
-    const product = await ProductModel.findByIdAndDelete(req.query.id);
-    return res.status(200).send({
-      success: true,
-      message: "Product deleted successfully",
-      product,
-    });
+    const product = await ProductModel.findByIdAndDelete({_id:productID});
+    if(product){
+      return res.status(200).send({
+        success: true,
+        message: "Product deleted successfully",
+        product,
+      });
+    }
+    else{
+      return res.status(404).send({
+        success:false,
+        message:"Product not found"})
+    }
   } catch (error) {
     return res.status(404).send({ error: error.message });
   }
