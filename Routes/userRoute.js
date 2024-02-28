@@ -90,7 +90,7 @@ userRouter.post("/logout", async (req, res) => {
         res.status(200).send("Logout Successfully")
     } catch (error) {
         console.error(error);
-        res.status(500).json({ message: 'Internal Server Error' });
+        res.status(500).json({ message: 'Internal Server Error coming' });
     }
 });
 
