@@ -5,6 +5,7 @@ const access_secretKey = process.env.ACCESS_SECRET_KEY;
 const refresh_secretKey = process.env.REFRESH_SECRET_KEY;
 
 const auth = async (req, res, next) => {
+
   const accessToken = req.cookies.ACCESS_TOKEN;
   const refreshToken = req.cookies.REFRESH_TOKEN;
   console.log("Auth hit-accessToken",accessToken)
@@ -21,6 +22,7 @@ const auth = async (req, res, next) => {
     jwt.verify(accessToken, access_secretKey, (err, decode) => {
       if (err) {
         jwt.verify(refreshToken, refresh_secretKey, (err, decode) => {
+          const cookieOptions={httpOnly:true,secure:true,sameSite:"none"}
           if (err) {
             return res.status(401).send({ message: "You need to login again" });
           }
@@ -34,8 +36,8 @@ const auth = async (req, res, next) => {
             refresh_secretKey,
             { expiresIn: "7d" }
           );
-          res.cookie("ACCESS_TOKEN", newAccessToken);
-          res.cookie("REFRESH_TOKEN", newRefreshToken);
+          res.cookie("ACCESS_TOKEN", newAccessToken,cookieOptions);
+          res.cookie("REFRESH_TOKEN", newRefreshToken,cookieOptions);
           next();
         });
       } else {
