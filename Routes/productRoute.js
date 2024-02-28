@@ -19,7 +19,7 @@ productRouter.post("/add", async (req, res, next) => {
 });
 
 
-productRouter.get("/",auth,async (req, res) => {
+productRouter.get("/",async (req, res) => {
   try {
     let {
       keyword,
