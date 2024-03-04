@@ -36,8 +36,8 @@ const auth = async (req, res, next) => {
             refresh_secretKey,
             { expiresIn: "7d" }
           );
-          res.cookie("ACCESS_TOKEN", newAccessToken,cookieOptions);
-          res.cookie("REFRESH_TOKEN", newRefreshToken,cookieOptions);
+          res.cookie("ACCESS_TOKEN", newAccessToken);
+          res.cookie("REFRESH_TOKEN", newRefreshToken);
           next();
         });
       } else {

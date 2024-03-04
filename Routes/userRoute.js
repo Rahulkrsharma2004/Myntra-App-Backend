@@ -55,8 +55,8 @@ userRouter.post("/login", async (req, res) => {
                 if (result) {
                     const ACCESS_TOKEN = jwt.sign({ userID: user._id, user: user.username }, access_secretKey, { expiresIn: "1h" });
                     const REFRESH_TOKEN = jwt.sign({ userID: user._id, user: user.username }, refresh_secretKey, { expiresIn: "7d" });
-                    res.cookie("ACCESS_TOKEN", ACCESS_TOKEN,cookieOptions)
-                    res.cookie("REFRESH_TOKEN", REFRESH_TOKEN,cookieOptions)
+                    res.cookie("ACCESS_TOKEN", ACCESS_TOKEN)
+                    res.cookie("REFRESH_TOKEN", REFRESH_TOKEN)
                     res.status(200).send({ "msg": "Login Successful", "ACCESS_TOKEN": ACCESS_TOKEN })
 
                 } else {
