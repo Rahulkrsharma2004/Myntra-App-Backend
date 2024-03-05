@@ -58,7 +58,7 @@ userRouter.post("/login", async (req, res) => {
                     const REFRESH_TOKEN = jwt.sign({ userID: user._id, user: user.username }, refresh_secretKey, { expiresIn: "7d" });
                     res.cookie("ACCESS_TOKEN", ACCESS_TOKEN,cookieOptions)
                     res.cookie("REFRESH_TOKEN", REFRESH_TOKEN,cookieOptions)
-                    res.status(200).send({ "msg": "Login Successful", "ACCESS_TOKEN": ACCESS_TOKEN })
+                    res.status(200).send({ "msg": "Login Successful", "ACCESS_TOKEN": ACCESS_TOKEN,"user":user })
 
                 } else {
                     res.status(200).send({ "msg": "Register first or Wrong crendential" })
@@ -94,8 +94,5 @@ userRouter.post("/logout", async (req, res) => {
         res.status(500).json({ message: 'Internal Server Error coming' });
     }
 });
-
-module.exports = userRouter;
-
 
 module.exports = userRouter;
