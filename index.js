@@ -13,7 +13,6 @@ const wishlistRouter = require("./Routes/wishListRoute");
 const PORT = process.env.PORT
 
 app.use(cookieParser());
-// app.use(auth)
 app.use(express.json());
 
 app.use(cors({
