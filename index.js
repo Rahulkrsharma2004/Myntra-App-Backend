@@ -8,8 +8,8 @@ const productRouter = require("./Routes/productRoute");
 const userRouter = require("./Routes/userRoute");
 const orderRouter = require("./Routes/orderRoute");
 const cartRouter = require("./Routes/cartRoute");
+const wishlistRouter = require("./Routes/wishRoute")
 const {auth} = require("./Middlewares/authMiddleware");
-const wishlistRouter = require("./Routes/wishListRoute");
 const PORT = process.env.PORT
 
 app.use(cookieParser());
