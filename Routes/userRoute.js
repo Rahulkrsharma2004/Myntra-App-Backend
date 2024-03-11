@@ -46,7 +46,7 @@ userRouter.post("/register", async (req, res) => {
 
 userRouter.post("/login", async (req, res) => {
     const { email, pass } = req.body
-    const cookieOptions = { httpOnly: true, secure: true, sameSite: "none" }
+    const cookieOptions = { httpOnly: true, secure: true, sameSite: "lax" }
     try {
 
         const user = await UserModel.findOne({ email })
@@ -83,12 +83,19 @@ const isValidPassword = (pass) => {
 userRouter.post("/logout", async (req, res) => {
     try {
         const token = req.cookies.ACCESS_TOKEN;
+        console.log(req.cookies)
         console.log("cookies", token);
-        const blacklistToken = new BlacklistToken({ ACCESS_TOKEN: token });
+        if(!token){
+            res.status(400).send("token missed")
+        }
+        else{
+            const blacklistToken = new BlacklistToken({ ACCESS_TOKEN : token });
         await blacklistToken.save()
         console.log(blacklistToken)
         res.clearCookie("ACCESS_TOKEN")
         res.status(200).send("Logout Successfully")
+        }
+        
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: 'Internal Server Error coming' });
