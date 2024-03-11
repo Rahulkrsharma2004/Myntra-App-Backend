@@ -8,10 +8,13 @@ const productRouter = require("./Routes/productRoute");
 const userRouter = require("./Routes/userRoute");
 const orderRouter = require("./Routes/orderRoute");
 const cartRouter = require("./Routes/cartRoute");
+const {auth} = require("./Middlewares/authMiddleware");
+const wishlistRouter = require("./Routes/wishListRoute");
 const PORT = process.env.PORT
 
-app.use(express.json());
 app.use(cookieParser());
+// app.use(auth)
+app.use(express.json());
 
 app.use(cors({
     origin:
@@ -23,6 +26,7 @@ app.use("/products", productRouter);
 app.use("/users", userRouter);
 app.use("/orders", orderRouter);
 app.use("/carts", cartRouter);
+app.use("/wishlists",wishlistRouter)
 
 
 app.listen(PORT, async () => {
