@@ -46,7 +46,7 @@ userRouter.post("/register", async (req, res) => {
 
 userRouter.post("/login", async (req, res) => {
     const { email, pass } = req.body
-    const cookieOptions = { httpOnly: true, secure: false, sameSite: "none" }
+    const cookieOptions = { httpOnly: true, secure: true, sameSite: "none" }
     try {
 
         const user = await UserModel.findOne({ email })
