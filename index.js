@@ -12,14 +12,15 @@ const wishlistRouter = require("./Routes/wishRoute")
 const {auth} = require("./Middlewares/authMiddleware");
 const PORT = process.env.PORT
 
-app.use(cookieParser());
 app.use(express.json());
 
 app.use(cors({
     origin:
-        ["http://localhost:5173", "https://myntra-app-backend-production.up.railway.app", "https://myntra-frontend-app.netlify.app"],
+    ["http://localhost:5173", "https://myntra-app-backend-production.up.railway.app", "https://myntra-frontend-app.netlify.app"],
     credentials: true,
 }));
+
+app.use(cookieParser());
 
 app.use("/products", productRouter);
 app.use("/users", userRouter);
