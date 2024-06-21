@@ -9,7 +9,7 @@ const userRouter = require("./Routes/userRoute");
 const orderRouter = require("./Routes/orderRoute");
 const cartRouter = require("./Routes/cartRoute");
 const wishlistRouter = require("./Routes/wishRoute")
-const {auth} = require("./Middlewares/authMiddleware");
+// const {auth} = require("./Middlewares/authMiddleware");
 const PORT = process.env.PORT
 
 app.use(express.json());

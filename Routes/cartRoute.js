@@ -1,11 +1,12 @@
 const CartModel = require("../Models/cartModel");
 const express = require("express");
+// const { auth } = require("../Middlewares/authMiddleware");
+const ProductModel = require("../Models/productModel");
 const { auth } = require("../Middlewares/authMiddleware");
 const cartRouter = express.Router();
-const ProductModel = require("../Models/productModel")
 
 
-cartRouter.get("/", async (req, res) => {
+cartRouter.get("/",auth, async (req, res) => {
   // const userId = req.body.userId;
   try {
     const carts = await CartModel.find()
@@ -27,15 +28,9 @@ cartRouter.post("/add/:id", async (req, res) => {
    console.log(productId)
    
   try {
-   
-    // const { userId } = req.body;
-   
-    // const product = await ProductModel.findOne({_id:productId})
-    // if(product){
       const cart = new CartModel({ productId });
       await cart.save()
       return res.status(201).send({ message: `Product Added Successfully` });
-    // } 
     
   } catch (error) {
     return res.status(404).send({ message: "Something went wrong 123abc" });
