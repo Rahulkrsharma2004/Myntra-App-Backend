@@ -34,6 +34,8 @@ This is the database made for Myntra frontend clone. This database is made using
 ## Images
 
 ![Screenshot (225)](https://github.com/Rahulkrsharma2004/Myntra-App-Backend/assets/139108196/2ce06a97-1b27-428b-84fa-b34b766ff541)
+![Screenshot (228)](https://github.com/Rahulkrsharma2004/Myntra-App-Backend/assets/139108196/5de594fe-6ee5-4273-ba62-35da864931b5)
+![Screenshot (227)](https://github.com/Rahulkrsharma2004/Myntra-App-Backend/assets/139108196/61c92f2a-e263-4f10-990c-c3bfb48dce13)
 
 ## Installation
 
