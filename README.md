@@ -27,8 +27,6 @@ Folder Structure
     vercel.json
 
 -----------------------------
-[Screenshot (225)](https://github.com/Rahulkrsharma2004/Myntra-App-Backend/assets/139108196/e556ad98-a792-44c6-a609-36166bc49c7e)
-
 ## Description
 
 This is the database made for Myntra frontend clone. This database is made using NodeJS, MongoDB, and Express JS. The database is deployed using Railway.
@@ -42,3 +40,6 @@ git clone https://github.com/Rahulkrsharma2004/Myntra-App-Backend.git
 cd Myntra-App-Backend
 npm install
 npm run dev
+
+![Screenshot (225)](https://github.com/Rahulkrsharma2004/Myntra-App-Backend/assets/139108196/2ce06a97-1b27-428b-84fa-b34b766ff541)
+
