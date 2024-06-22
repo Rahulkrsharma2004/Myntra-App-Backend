@@ -27,8 +27,7 @@ Folder Structure
     vercel.json
 
 -----------------------------
-![Myntra Logo](![Screenshot (225)](https://github.com/Rahulkrsharma2004/Myntra-App-Backend/assets/139108196/e556ad98-a792-44c6-a609-36166bc49c7e)
-.png)
+[Screenshot (225)](https://github.com/Rahulkrsharma2004/Myntra-App-Backend/assets/139108196/e556ad98-a792-44c6-a609-36166bc49c7e)
 
 ## Description
 
