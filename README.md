@@ -41,5 +41,5 @@ cd Myntra-App-Backend
 npm install
 npm run dev
 
-![Screenshot (225)](https://github.com/Rahulkrsharma2004/Myntra-App-Backend/assets/139108196/2ce06a97-1b27-428b-84fa-b34b766ff541)
+![Screenshot (225)](https://github.com/Rahulkrsharma2004/Myntra-App-Backend/assets/139108196/2ce06a97-1b27-428b-84fa-b34b766ff541).png
 
