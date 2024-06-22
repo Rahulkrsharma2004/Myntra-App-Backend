@@ -31,6 +31,10 @@ Folder Structure
 
 This is the database made for Myntra frontend clone. This database is made using NodeJS, MongoDB, and Express JS. The database is deployed using Railway.
 
+## Images
+
+![Screenshot (225)](https://github.com/Rahulkrsharma2004/Myntra-App-Backend/assets/139108196/2ce06a97-1b27-428b-84fa-b34b766ff541)
+
 ## Installation
 
 Instructions for setting up your project locally.
@@ -41,6 +45,4 @@ cd Myntra-App-Backend
 npm install
 npm run dev
 
-## Images
 
-![Screenshot (225)](https://github.com/Rahulkrsharma2004/Myntra-App-Backend/assets/139108196/2ce06a97-1b27-428b-84fa-b34b766ff541)
