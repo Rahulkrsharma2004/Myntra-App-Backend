@@ -16,7 +16,7 @@ app.use(express.json());
 
 app.use(cors({
     origin:
-    ["http://localhost:5173", "https://myntra-app-backend.vercel.app", "https://myntra-project-nu.vercel.app/"],
+    ["http://localhost:5173", "https://myntra-app-backend.vercel.app", "https://myntra-project-nu.vercel.app"],
     credentials: true,
 }));
 
